@@ -47,36 +47,39 @@ const Home = () => {
   useEffect(() => {
     fetchDashboardData();
   }, []);
+
+  // Debug: Log dashboard data before rendering
+  console.log('dashboardData', dashboardData);
   
 
   return (
  <DashboardLayout activeMenu="Dashboard">
-  <div className="my-5 mx-auto">
+  <div className="my-8 mx-auto bg-gradient-to-br from-white via-purple-50 to-fuchsia-100 rounded-2xl shadow-xl p-8">
 
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
       <InfoCard
-           icon={<LuWalletMinimal size={28} />}
-      label="Total Balance"
-      value={addThousandsSeparator(dashboardData?.totalBalance)}
-      color="bg-purple-600"
+     icon={<LuWalletMinimal size={28} />}
+   label="Total Balance"
+  value={Number(dashboardData?.totalBalance ?? 0)}
+   color="bg-purple-600"
       />
 
-     <InfoCard
-      icon={<LuWalletMinimal/>}
-      label="Total Income"
-      value={addThousandsSeparator(dashboardData?.totalIncome)}
-      color="bg-orange-500"
+  <InfoCard
+   icon={<LuWalletMinimal/>}
+   label="Total Income"
+  value={Number(dashboardData?.totalIncome ?? 0)}
+   color="bg-orange-500"
       />
 
       <InfoCard
-      icon={<LuHandCoins/>}
-      label="Total Expense"
-      value={addThousandsSeparator(dashboardData?.totalExpense)} 
-      color="bg-red-500"
+  icon={<LuHandCoins/>}
+  label="Total Expense"
+  value={Number(dashboardData?.totalExpense ?? 0)} 
+  color="bg-red-500"
       />
       </div>
 
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-6'>
+  <div className='grid grid-cols-1 md:grid-cols-2 gap-8 mt-8'>
       <RecentTransactions
       transactions={dashboardData?.recentTransactions}
       onSeeMore={()=>navigate("/expense")}
@@ -98,14 +101,14 @@ const Home = () => {
       />
       
       <RecentIncomeWithChart
-      data={dashboardData?.last60DaysIncome?.transactions?.slice(0,4) || []} 
-      totalIncome={dashboardData?.totalIncome||0}
+        data={dashboardData?.allIncome?.transactions?.slice(0,4) || []}
+        totalIncome={dashboardData?.allIncome?.total || 0}
       />
-      
+
       <RecentIncome
-      transactions={dashboardData?.last60DaysIncome?.transactions || []}
-      onSeeMore={()=>navigate("/income")}
-        />
+        transactions={dashboardData?.allIncome?.transactions || []}
+        onSeeMore={()=>navigate("/income")}
+      />
       
       </div>
   </div>

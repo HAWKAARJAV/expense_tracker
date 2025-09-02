@@ -27,14 +27,13 @@ exports.getDashboardData = async (req, res) => {
     const totalIncome = totalIncomeResult[0]?.totalIncome || 0;
     const totalExpense = totalExpenseResult[0]?.totalExpense || 0;
 
-    // Last 60 days income transactions
-    const last60DaysIncomeTransactions = await Income.find({
-      userId: userObjectId,
-      date: { $gte: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000) },
+    // All income transactions
+    const allIncomeTransactions = await Income.find({
+      userId: userObjectId
     }).sort({ date: -1 });
 
-    // Calculate total income in last 60 days
-    const incomeLast60Days = last60DaysIncomeTransactions.reduce(
+    // Calculate total income
+    const incomeTotal = allIncomeTransactions.reduce(
       (sum, transaction) => sum + transaction.amount,
       0
     );
@@ -80,9 +79,9 @@ exports.getDashboardData = async (req, res) => {
         total: expenseLast30Days,
         transactions: last30DaysExpenseTransactions,
       },
-      last60DaysIncome: {
-        total: incomeLast60Days,
-        transactions: last60DaysIncomeTransactions,
+      allIncome: {
+        total: incomeTotal,
+        transactions: allIncomeTransactions,
       },
       recentTransactions: lastTransactions,
     });

@@ -1,5 +1,6 @@
 import React from 'react'
 import CustomPieChart from '../Charts/CustomPieChart'
+import { addThousandsSeparator } from '../../utils/helper'
 const COLORS=['#875CF5','#FA2C37','#FF6900'] 
 const FinanceOverview = ({totalBalance,totalIncome,totalExpense}) => {
 
@@ -23,12 +24,17 @@ const FinanceOverview = ({totalBalance,totalIncome,totalExpense}) => {
             <h5 className='text-lg'>FinanceOverview</h5>
         </div>
 
-        <CustomPieChart
-         data={balanceData}
-        label="Total Balance"
-        totalAmount={`$${totalBalance}`}
-         colors={COLORS}
-         showTextAnchor />
+                <div className="flex justify-center items-center py-6">
+                    <div className="w-full max-w-xs">
+                        <CustomPieChart
+                            data={balanceData}
+                            label="Total Balance"
+                            totalAmount={`₹${addThousandsSeparator(totalBalance)}`}
+                            colors={COLORS}
+                            showTextAnchor
+                        />
+                    </div>
+                </div>
     </div>
 }
 

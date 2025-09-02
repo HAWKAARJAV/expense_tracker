@@ -1,6 +1,15 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
+async function run() {
+  const password = "1234"; // the plain password you want to hash
+  const hashed = await bcrypt.hash(password, 10);
+  console.log("Plain password:", password);
+  console.log("Hashed password:", hashed);
+}  
+
+run();
+
 const UserSchema= new mongoose.Schema({
 
     fullName: {

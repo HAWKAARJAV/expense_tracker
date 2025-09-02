@@ -22,16 +22,23 @@ export const addThousandsSeparator = (num) => {
         return "";
     }
     const [integerPart, decimalPart] = num.toString().split(".");
-    const formattedIntegerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    // Indian format: first comma after 3 digits, then every 2 digits
+    let lastThree = integerPart.slice(-3);
+    let otherNumbers = integerPart.slice(0, -3);
+    let formattedIntegerPart = otherNumbers !== ''
+        ? otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + ',' + lastThree
+        : lastThree;
     return decimalPart ? `${formattedIntegerPart}.${decimalPart}` : formattedIntegerPart;
 }
-export const prepareExpenseBarChartData=(data)=>{
-    const charData=data.map((item)=>({
-        category:item?.category,
-        amount:item.amount
+export const prepareExpenseBarChartData=(data=[])=>{
+    const sortedData = [...data].sort((a, b) => new Date(a.date) - new Date(b.date));
+    
+    const chartData = sortedData.map((item) => ({
+        month: moment(item?.date).format("Do MMM"),
+        amount: item?.amount,
+        category: item?.category
     }));
-    return charData;
-
+    return chartData;
 }
 
 import moment from "moment";

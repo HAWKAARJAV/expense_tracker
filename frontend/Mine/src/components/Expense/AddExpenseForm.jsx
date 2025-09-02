@@ -5,10 +5,10 @@ import { useState } from 'react'
 
 const AddExpenseForm = ({onAddExpense}) => {
     const[income,setIncome]=useState({
-        category:"",
-        amount:0,
-        date:"",
-        icon:""
+    category: "",
+    amount: "",
+    date: "",
+    icon: ""
     })
     const handleChange=(key,value)=>{
         setIncome({...income,[key]:value});
@@ -30,7 +30,7 @@ const AddExpenseForm = ({onAddExpense}) => {
     <Input 
     value={income.amount}
     onChange={(e)=>handleChange("amount",e.target.value)} 
-    placeholder=""
+    placeholder="0"
     type="number" 
     label="Amount" />
 
@@ -43,11 +43,11 @@ const AddExpenseForm = ({onAddExpense}) => {
     label="Date" />
 
 
-    <div className='flex justify-end mt-6 '>
+    <div className='flex justify-end mt-6'>
     <button 
     type="button"
-    className="add-btn add-btn-fill"
-     onClick={()=>onAddExpense(income)}>Add Expense</button>
+    className="btn-primary"
+     onClick={()=>onAddExpense(income)}>Submit Expense</button>
     </div>
     </div>
   

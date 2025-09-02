@@ -16,6 +16,7 @@ const Expense = () => {
 
   const[expenseData,setExpenseData]=useState([]);
   const[loading,setLoading]=useState(false);
+  const[isDownloading,setIsDownloading]=useState(false);
   const[openDeleteAlert,setOpenDeleteAlert]=useState({
   show:false,
   data:null,
@@ -102,6 +103,7 @@ const Expense = () => {
         
          }
          const handleDownloadExpenseDetails=async()=>{
+          setIsDownloading(true);
           try{
             const response=await axiosInstance.get(API_PATHS.EXPENSE.DOWNLOAD_EXPENSE_EXCEL,
               {
@@ -116,64 +118,72 @@ const Expense = () => {
               link.click();
               link.parentNode.removeChild(link);
               window.URL.revokeObjectURL(url);
+              toast.success("Expense data downloaded successfully");
           }
           catch(error){
             console.log(error);
             if(error.response){
               toast.error(error.response.data.message);
+            } else {
+              toast.error("Failed to download expense data");
             }
+          } finally {
+            setIsDownloading(false);
           }
          }
 
   return (
     <DashboardLayout activeMenu="Expense">
-      <div className='my-5 mx-auto'>
-      <div className="grid grid-cols-1 gap-6">
-     <div className="">
-      <ExpenseOverview 
+      <div className="my-8 mx-auto bg-gradient-to-br from-white via-purple-50 to-fuchsia-100 rounded-2xl shadow-xl p-8">
+        <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-6">
+          <div className="flex flex-col items-start">
+            <h2 className="text-3xl font-extrabold text-purple-700 mb-2 tracking-wide">Expense Overview</h2>
+            <p className="text-sm text-slate-700 font-medium">Track your spending and stay in control!</p>
+          </div>
+          <button
+            className="flex items-center gap-2 px-6 py-2 rounded-xl bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white font-bold shadow-lg hover:scale-105 transition text-lg"
+            onClick={() => setOpenAddExpenseModel(true)}
+          >
+            <span className="animate-bounce">💸</span> Add Expense
+          </button>
+        </div>
+        <div className="mb-6">
+          <div className="bg-white rounded-xl shadow p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex flex-col items-start">
+              <span className="text-lg font-semibold text-fuchsia-600">Total Expense</span>
+              <span className="text-2xl font-bold text-purple-700">₹{expenseData.reduce((sum, e) => sum + (e.amount || 0), 0).toLocaleString()}</span>
+            </div>
+            <span className="text-xs text-slate-500 italic">"Smart spending leads to big savings!"</span>
+          </div>
+        </div>
+        <ExpenseOverview 
           transactions={expenseData}
-          onExpenseIncome={()=> setOpenAddExpenseModel(true)}
-    />
-    </div>
-
-    <ExpenseList
-     transactions={expenseData}
-     onDeleteIncome={(id)=>{
-      setOpenDeleteAlert({
-        show:true,
-        data:id,
-      });
-     }}
-     onDownload={handleDownloadExpenseDetails}
-     />
-
-    </div>
-    <Modal 
-    isOpen={openAddExpenseModel}
-     onClose={()=>setOpenAddExpenseModel(false)}
-       title="Add Expense"
-     >
-     <AddExpenseForm
-     onAddExpense={handleAddExpense}/>
-     </Modal>
-
-
-     <Modal 
-      isOpen={openDeleteAlert.show}
-      onClose={() => setOpenDeleteAlert({
-        show:false,
-        data:null,
-      })}
-      title="Delete Expense"
-      >
-      <DeleteAlert
-      content="Are you sure you want to delete this expense?"
-      onDeleteIncome={()=>deleteExpense(openDeleteAlert.data)}
-      />
-      </Modal>
-
-
-
+        />
+        <ExpenseList
+          transactions={expenseData}
+          onDeleteIncome={(id) => {
+            setOpenDeleteAlert({ show: true, data: id });
+          }}
+          onDownload={handleDownloadExpenseDetails}
+          isDownloading={isDownloading}
+        />
+        <Modal 
+          isOpen={openAddExpenseModel}
+          onClose={() => setOpenAddExpenseModel(false)}
+          title="Add Expense"
+        >
+          <AddExpenseForm onAddExpense={handleAddExpense}/>
+        </Modal>
+        <Modal 
+          isOpen={openDeleteAlert.show}
+          onClose={() => setOpenDeleteAlert({ show: false, data: null })}
+          title="Delete Expense"
+        >
+          <DeleteAlert
+            content="Are you sure you want to delete this expense?"
+            onDeleteIncome={() => deleteExpense(openDeleteAlert.data)}
+          />
+        </Modal>
       </div>
     </DashboardLayout>
   )

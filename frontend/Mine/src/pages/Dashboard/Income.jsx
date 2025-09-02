@@ -14,12 +14,13 @@ import DeleteAlert from '../../components/DeleteAlert'
 const Income = () => {
   const[incomeData,setIncomeData]=useState([]);
   const[loading,setLoading]=useState(false);
+  const[isDownloading,setIsDownloading]=useState(false);
   const[openDeleteAlert,setOpenDeleteAlert]=useState({
   show:false,
   data:null,
 
   });
-  const[openAddIncomeModel, setOpenAddIncomeModel] = useState(true);
+  const[openAddIncomeModel, setOpenAddIncomeModel] = useState(false);
 
   const fetchIncomeDetails=async()=>{
 
@@ -113,7 +114,7 @@ catch(error){
    },[]);
 
    const handleDownloadIncomeDetails=async()=>{
-
+    setIsDownloading(true);
     try{
       const response=await axiosInstance.get(
         API_PATHS.INCOME.DOWNLOAD_INCOME_EXCEL,
@@ -129,62 +130,74 @@ catch(error){
         link.click();
         link.parentNode.removeChild(link);
         window.URL.revokeObjectURL(url);
+        toast.success("Income data downloaded successfully");
     }
     catch(error){
       console.log(error);
       if(error.response){
         toast.error(error.response.data.message);
-    }
+      } else {
+        toast.error("Failed to download income data");
+      }
+    } finally {
+      setIsDownloading(false);
     }
    }
 
   return (
-    <DashboardLayout activateMenu="Income">
+    <DashboardLayout activeMenu="Income">
 
-    <div className="my-5 mx-auto">
-    <div className="grid grid-cols-1 gap-6">
-    <div className="grid grid-cols-1 gap-6">
-     <IncomeOverview 
-          transactions={incomeData}
-          onAddIncome={()=> setOpenAddIncomeModel(true)}
-     />
-    </div>
-
-    <IncomeList 
-     transactions={incomeData}
-     onDeleteIncome={(id)=>{
-     setOpenDeleteAlert({
-      show:true,
-      data:id,
-    });
-  }}
-onDownloadIncome={handleDownloadIncomeDetails}
-/>
-
-    </div>
-   <Modal 
-   isOpen={openAddIncomeModel}
-   onClose={() => setOpenAddIncomeModel(false)}
-   title="Add Income"
-   >
-    <AddIncomeForm onAddIncome={handleAddIncome} />
-   </Modal>
-
-   <Modal 
-      isOpen={openDeleteAlert.show}
-      onClose={() => setOpenDeleteAlert({
-        show:false,
-        data:null,
-      })}
-      title="Delete Income"
-      >
-      <DeleteAlert
-      content="Are you sure you want to delete this income?"
-      onDeleteIncome={()=>deleteIncome(openDeleteAlert.data)}
+    <div className="my-8 mx-auto bg-gradient-to-br from-white via-purple-50 to-fuchsia-100 rounded-2xl shadow-xl p-8">
+      <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-6">
+        <div className="flex flex-col items-start">
+          <h2 className="text-3xl font-extrabold text-purple-700 mb-2 tracking-wide">Income Overview</h2>
+          <p className="text-sm text-slate-700 font-medium">Track your earnings and celebrate every milestone!</p>
+        </div>
+        <button
+          className="flex items-center gap-2 px-6 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-fuchsia-500 text-white font-bold shadow-lg hover:scale-105 transition text-lg"
+          onClick={() => setOpenAddIncomeModel(true)}
+        >
+          <LuPlus className="animate-bounce" /> Add Income
+        </button>
+      </div>
+      <div className="mb-6">
+        <div className="bg-white rounded-xl shadow p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex flex-col items-start">
+            <span className="text-lg font-semibold text-purple-600">Total Income</span>
+            <span className="text-2xl font-bold text-fuchsia-700">₹{incomeData.reduce((sum, i) => sum + (i.amount || 0), 0).toLocaleString()}</span>
+          </div>
+          <span className="text-xs text-slate-500 italic">"Every rupee counts! Keep growing your income."</span>
+        </div>
+      </div>
+      <IncomeOverview 
+        transactions={incomeData}
+        onAddIncome={() => setOpenAddIncomeModel(true)}
       />
+      <IncomeList 
+        transactions={incomeData}
+        onDeleteIncome={(id) => {
+          setOpenDeleteAlert({ show: true, data: id });
+        }}
+        onDownloadIncome={handleDownloadIncomeDetails}
+        isDownloading={isDownloading}
+      />
+      <Modal 
+        isOpen={openAddIncomeModel}
+        onClose={() => setOpenAddIncomeModel(false)}
+        title="Add Income"
+      >
+        <AddIncomeForm onAddIncome={handleAddIncome} />
       </Modal>
-
-
+      <Modal 
+        isOpen={openDeleteAlert.show}
+        onClose={() => setOpenDeleteAlert({ show: false, data: null })}
+        title="Delete Income"
+      >
+        <DeleteAlert
+          content="Are you sure you want to delete this income?"
+          onDeleteIncome={() => deleteIncome(openDeleteAlert.data)}
+        />
+      </Modal>
     </div>
     </DashboardLayout>
   )

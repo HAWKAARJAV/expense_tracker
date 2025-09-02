@@ -24,10 +24,6 @@ const IncomeOverview = ({transactions,onAddIncome}) => {
             Track your income and expenses
             </p>
             </div>
-                <button className="add-btn" onClick={onAddIncome}>
-                <LuPlus className="text-base" />
-                Add Income
-                </button>   
                </div>
         <div className="mt-10">
             <CustomBarChart data={chartData}  xAxisKey="month" />

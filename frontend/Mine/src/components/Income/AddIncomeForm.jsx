@@ -5,10 +5,10 @@ import EmojiPickerPopup from '../EmojiPickerPopup'
 const AddIncomeForm = ({onAddIncome}) => {
 
     const[income,setIncome]=useState({
-        source:"",
-        amount:"",
-        date:"",
-        icon:""
+  source: "",
+  amount: "",
+  date: "",
+  icon: ""
     });
    const handleChange=(key,value)=>{
     setIncome({...income,[key]:value});
@@ -28,11 +28,11 @@ const AddIncomeForm = ({onAddIncome}) => {
       label="Income Source" />
       
         <Input 
-      value={income.amount}
-      onChange={(e)=>handleChange("amount",e.target.value)} 
-      placeholder=""
-      type="number" 
-      label="Amount" />
+  value={income.amount}
+  onChange={(e)=>handleChange("amount",e.target.value)} 
+  placeholder="0"
+  type="number" 
+  label="Amount" />
 
 
     <Input 
@@ -41,13 +41,15 @@ const AddIncomeForm = ({onAddIncome}) => {
       placeholder=""
       type="date" 
       label="Date" />
-    {/* <div className='flex justify-end mt-6'> */}
-
-       <button type="button"
+    
+    <div className='flex justify-end mt-6'>
+       <button 
+       type="button"
        onClick={()=>onAddIncome(income)}
-      //  className='add-btn-fill'
+       className='btn-primary'
        >
-        Add Income</button>
+        Submit Income</button>
+    </div>
 
     </div>
   )

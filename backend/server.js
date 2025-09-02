@@ -10,9 +10,10 @@ const incomeRoutes=require ("./routes/incomeRoutes");
 const expenseRoutes=require ("./routes/expenseRoutes");
 const dashboardRoutes=require ("./routes/dashboardRoutes");
 app.use(cors({
-    origin: process.env.CLIENT_URL ||"*",
-    methods: ["GET", "POST","PUT","DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+  origin: ["http://localhost:5173", "http://localhost:5174"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
 }));
 
 app.use(express.json());

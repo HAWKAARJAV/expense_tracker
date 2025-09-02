@@ -2,7 +2,11 @@ import React from 'react'
 import {LuArrowRight} from "react-icons/lu"
 import moment from 'moment'
 import TransactionInfoCard from '../cards/TransactionInfoCard'
+import { LuHandCoins } from "react-icons/lu";
+
 const ExpenseTransactions = ({transactions,onSeeMore}) => {
+  const hasTransactions = transactions && transactions.length > 0;
+  
   return (
     <div className="card">
         <div className="flex items-center justify-between">
@@ -13,8 +17,8 @@ const ExpenseTransactions = ({transactions,onSeeMore}) => {
         </button>
         </div>
       <div className="mt-6">
-        {
-            transactions?.slice(0,5)?.map((expense)=>(
+        {hasTransactions ? (
+            transactions.slice(0,5).map((expense)=>(
                 <TransactionInfoCard 
                 key={expense._id} 
                 title={expense.category}
@@ -25,7 +29,13 @@ const ExpenseTransactions = ({transactions,onSeeMore}) => {
                 hideDeleteBtn
                 />
             ))
-        }
+        ) : (
+            <div className="flex flex-col items-center justify-center py-8 text-gray-500">
+                <LuHandCoins className="text-4xl mb-2 text-gray-300" />
+                <p className="text-sm font-medium">No expenses yet</p>
+                <p className="text-xs text-gray-400 mt-1">Add your first expense to start tracking</p>
+            </div>
+        )}
       </div>
     </div>
   )
