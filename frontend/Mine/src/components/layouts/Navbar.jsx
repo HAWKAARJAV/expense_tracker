@@ -4,7 +4,7 @@ import { useState } from 'react'
 import SideMenu from './SideMenu'
 const Navbar = ({activeMenu}) => {
     const [openSideMenu, setOpenSideMenu] = useState(false);
-  return (
+  return ( 
   <div className="flex gap-5 bg-gradient-to-r from-purple-600 via-fuchsia-500 to-pink-400 border-b border-purple-200 backdrop-blur-[2px] py-5 px-10 sticky top-0 z-30 shadow-lg">
   <button
   className="block lg:hidden text-white"
