@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const path = require("path");
+
 const app = express();
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
@@ -11,7 +12,6 @@ const expenseRoutes = require("./routes/expenseRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 
 app.use(cors());
-
 app.use(express.json());
 
 connectDB();
